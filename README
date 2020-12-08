@@ -1,14 +1,20 @@
 # File Name: main.tf:
 
-# Terraform module start
 module "vcentervms" {
-  source  = "soumukhe/vcentervms/vsphere"
-  version = "1.0.0"
-  # insert the 2 required variables here
-  vmnames          = ["db", "db1", "db2"]
+  source           = "../c-modules"
+  vmnames =  local.vnames
   whoami           = var.whoami
   vcenter_password = var.vcenter_password
 }
+
+locals {
+  # Note the below line is a conditional statemeent in HCL language.  the first list are the vms for Fab7 and the 2nd one is fof the list for fabric 8
+  #   vnames = terraform.workspace == "Fab7" ? [Fab7-VM-List] : [Fab8-VM-List]
+  #   example:  vnames = terraform.workspace == "Fab7" ? ["web", "app"] : ["db"]
+
+  vnames = terraform.workspace == "Fab7" ? ["vm1", "vm2", "vm3"] : ["web", "app", "db"]
+}
+
 variable "whoami" {
   type = string
 }
@@ -19,12 +25,11 @@ output "VM_IPs" {
   value = module.vcentervms.ip
 }
 
-##  Terraform Module End
 
+# DOCUMENTATION BELOW:
+# -----------------------
 
-# Documentation on How to use this for DMZ Tiger Team Fabric
-
-/*   How to Use This Terraform Script to spin up one or multple VMs in DMZ fabric
+/*   How to Use This Terraform Script to spin up one or multple VMs in DMZ fabric:
 
 Kindly destroy VMs once done with what you are doing.  You can spin them up again in minutes
   When Creating VMs, your VM will spin up in a resource group on vCenter with your CCO ID name. your VM names will be appended by your CCO ID name.
@@ -35,9 +40,9 @@ Once done installing whatever software you need on the VM, please use the Ubuntu
 
 STEP 1:   Copy script to file main.tf in your directory:
 ---------------------------------------------------------- 
-Please make a file called "main.tf"  after logging int the jumpbox with your username in some director
+Please make a file called "main.tf"  after logging int the jumpbox with your username in some directory
   as an example:  "mkdir -p Terraform/vCenter && cd Terraform/vCenter"
-  vi main.tf   and then copy this entire contents (the full README) in there
+  vi main.tf   and the above terrarorm script toit.  You can copy this entire contents (the full README) in there also, for reference on usage
 
 STEP 2:  Create Terraform Workspace:
 ------------------------------------
@@ -55,6 +60,7 @@ STEP 3:  Spin up your VMs in either Fab7 or Fab8
       "terraform workspace select Fab7"    "terraform workspace select Fab8"   to go to the desired workspace
 
  *** Make sure to change the contents of the list "vmnames" in the above script), with the names you want for your VMs. You could do 1 to as many VMs there
+     The first conditional ist is for Fab7 and the second one is for Fab8
   Please don't go crazy on the number of VMs you create.  Terraform by default does parallesim for 10 objects at a time
   To start using: 
     (a)  terraform validate    ( you can do terraform init again if you wish, but not needed, since you already did that before creating workspaces)
