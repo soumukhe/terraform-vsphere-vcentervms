@@ -38,37 +38,43 @@ Kindly destroy VMs once done with what you are doing.  You can spin them up agai
 Once done installing whatever software you need on the VM, please use the Ubuntu 18.04 netplan utility to change IP and move over NIC from vCenter to your ACI port group
  documentation on how to use "netplan" is in the labdoc
 
-STEP 1:   Copy script to file main.tf in your directory:
----------------------------------------------------------- 
-Please make a file called "main.tf"  after logging int the jumpbox with your username in some directory
-  as an example:  "mkdir -p Terraform/vCenter && cd Terraform/vCenter"
-  vi main.tf   and the above terrarorm script toit.  You can copy this entire contents (the full README) in there also, for reference on usage
+First time only:
+------------------
 
-STEP 2:  Create Terraform Workspace:
-------------------------------------
-Once file is saved usage is very easy:
-  Before you start usint this script, please do a "terraform init" and  make 2 workspaces in Terraform "Fab7"  and "Fab8"
-   (a)  terraform init   
-   (b) terraform workspace new Fab7  
-   (c) terraform workspace new Fab8
+  STEP 1:   Copy script to file main.tf in your directory:
+  ---------------------------------------------------------- 
+  Please make a file called "main.tf"  after logging int the jumpbox with your username in some directory
+    as an example:  "mkdir -p Terraform/vCenter && cd Terraform/vCenter"
+    vi main.tf   and the above terrarorm script toit.  You can copy this entire contents (the full README) in there also, for reference on usage
+  
+  STEP 2:  Create Terraform Workspace:
+  ------------------------------------
+  Once file is saved usage is very easy:
+    Before you start usint this script, please do a "terraform init" and  make 2 workspaces in Terraform "Fab7"  and "Fab8"
+     (a)  terraform init   
+     (b) terraform workspace new Fab7  
+     (c) terraform workspace new Fab8
+  
+From now on, you can just do the below:
+----------------------------------------
    
-STEP 3:  Spin up your VMs in either Fab7 or Fab8
---------------------------------------------------
-   Now to build your VMs in Fab7, go to that workspace, similarly for Fab8  go to Fab8 worspace.   
-    This is how to seee workspaces and switch between them.  
-      "terraform worksapce list"   To list all your workspaces
-      "terraform workspace select Fab7"    "terraform workspace select Fab8"   to go to the desired workspace
-
- *** Make sure to change the contents of the list "vmnames" in the above script), with the names you want for your VMs. You could do 1 to as many VMs there
-     The first conditional ist is for Fab7 and the second one is for Fab8
-  Please don't go crazy on the number of VMs you create.  Terraform by default does parallesim for 10 objects at a time
-  To start using: 
-    (a)  terraform validate    ( you can do terraform init again if you wish, but not needed, since you already did that before creating workspaces)
-    (b)  terraform fmt
-    (c)  terraform plan
-    (d)  terraform apply
-    (e)  terraform refresh (will show your IPs for the VMs),  subsequently you can do terraform output. 
-
+  STEP 3:  Spin up your VMs in either Fab7 or Fab8 (i.e. ***select your Terraform Workspace***)
+  ---------------------------------------------------------------------------------------------
+     Now to build your VMs in Fab7, go to that workspace, similarly for Fab8  go to Fab8 worspace.   
+      This is how to seee workspaces and switch between them:
+        "terraform worksapce list"   To list all your workspaces
+        "terraform workspace select Fab7"    "terraform workspace select Fab8"   to go to the desired workspace
+  
+   *** Make sure to change the contents of the list "vmnames" in the above script), with the names you want for your VMs. You could do 1 to as many VMs there
+       The first conditional ist is for Fab7 and the second one is for Fab8
+    Please don't go crazy on the number of VMs you create.  Terraform by default does parallesim for 10 objects at a time
+    To start using: 
+      (a)  terraform validate    ( you can do terraform init again if you wish, but not needed, since you already did that before creating workspaces)
+      (b)  terraform fmt
+      (c)  terraform plan
+      (d)  terraform apply
+      (e)  terraform refresh (will show your IPs for the VMs),  subsequently you can do terraform output. 
+  
 
 The VMS will spin up now and once the script stops running (about 3 minutes),  do a "terraform refresh" and you will see the IPs it got.
   You can now ssh to them and they will have Internet Connectivity
