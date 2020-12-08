@@ -1,7 +1,7 @@
 # File Name: main.tf:
 
 module "vcentervms" {
-  source           = "../c-modules"
+  source  = "soumukhe/vcentervms/vsphere"
   vmnames =  local.vnames
   whoami           = var.whoami
   vcenter_password = var.vcenter_password
